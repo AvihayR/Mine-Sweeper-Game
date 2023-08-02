@@ -165,21 +165,11 @@ function renderCellsColor() {
 }
 
 function randomizeMines(board, count) {
-    var locations = []
-    var randomInts = getNRandomInts(count * 2)
-
-    for (var i = 0; i < count; i++) {
-        const location = {
-            i: randomInts.pop(),
-            j: randomInts.pop()
-        }
-        locations.push(location)
-    }
+    var randLocations = getRandLocations(count)
 
     for (var x = 0; x < count; x++) {
-        const currLocation = locations.pop()
+        const currLocation = randLocations.pop()
         board[currLocation.i][currLocation.j].isMine = true
-        console.log('x>=location.length? ', x <= locations.length, x, locations.length)
     }
 }
 

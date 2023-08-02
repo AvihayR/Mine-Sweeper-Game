@@ -76,6 +76,10 @@ button.size {
     cursor: pointer;
 }
 
+button.size {
+    margin: 15px;
+}
+
 .modal button:hover,
 button.size:hover {
     background-color: var(--light-cyan);
