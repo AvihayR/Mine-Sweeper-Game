@@ -1,7 +1,6 @@
 'use strict'
 
 //Neighbors loops:
-
 function findNegsLocations(board, location) {
     var negLocations = []
 

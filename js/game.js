@@ -1,6 +1,7 @@
 'use strict'
 
 var MINE = '💣'
+var FLAG = '📍'
 var gBoard
 
 var gGame = {
@@ -15,7 +16,6 @@ var gLevel = {
     MINES: 2
 }
 
-
 function onInit() {
     gGame.isOn = true
     gBoard = buildBoard()
@@ -26,35 +26,73 @@ function onInit() {
 
 function onCellClicked(elCell, i, j) {
     if (!gGame.isOn) return
+
+    if (gBoard[i][j].isMarked) return
+    if (gBoard[i][j].isShown) return
+
     gBoard[i][j].isShown = true
+    gGame.shownCount++
 
     if (gBoard[i][j].isMine) {
-        gameOver(elCell)
+        gameOver()
     }
 
-    expandLoneCell({ i, j })
+    expandShown({ i, j })
     renderBoard()
-
+    checkGameOver()
 }
 
+function onCellMarked(ellCell, i, j) {
+    var currCell = gBoard[i][j]
+
+    if (!gGame.isOn) return
+    if (currCell.isShown) return
+    if (gGame.markedCount >= gLevel.MINES &&
+        !currCell.isMarked) return
+
+    //Model:
+    if (currCell.isMarked) {
+        currCell.isMarked = false
+        gGame.markedCount--
+        //DOM:
+        ellCell.innerText = ''
+    } else {
+        currCell.isMarked = true
+        gGame.markedCount++
+
+        //DOM:
+        ellCell.innerText = FLAG
+    }
+
+    checkGameOver()
+}
+
+function checkGameOver() {
+    if (gGame.shownCount + gGame.markedCount === gLevel.SIZE * gLevel.SIZE) {
+        gameOver()
+    }
+}
 
 function gameOver(elCell) {
     console.log('Game over!')
     gGame.isOn = false
 }
 
-
-function expandLoneCell(location) {
+function expandShown(location) {
     const mineCount = countMinesNegs(gBoard, location.i, location.j)
     if (mineCount > 0) return
     const negLocations = findNegsLocations(gBoard, location)
 
     for (var i = 0; i < negLocations.length; i++) {
         const currLocation = negLocations[i]
-        gBoard[currLocation.i][currLocation.j].isShown = true
+
+        if (!gBoard[currLocation.i][currLocation.j].isShown
+            && !gBoard[currLocation.i][currLocation.j].isMarked) {
+            gBoard[currLocation.i][currLocation.j].isShown = true
+            gGame.shownCount++
+        }
     }
 }
-
 
 function setMinesNegsCount(board) {
     for (var i = 0; i < board.length; i++) {
@@ -75,9 +113,10 @@ function renderBoard() {
 
         for (var j = 0; j < gBoard[0].length; j++) {
             const currCell = gBoard[i][j]
-            strHTML += `<td data-i="${i}" data-j="${j}" onclick="onCellClicked(this, ${i}, ${j})">`
+            strHTML += `<td data-i="${i}" data-j="${j}" onclick="onCellClicked(this, ${i}, ${j})"  oncontextmenu="onCellMarked(this, ${i}, ${j})">`
 
-            if (currCell.isShown && currCell.isMine) strHTML += MINE
+            if (currCell.isMarked) strHTML += FLAG
+            else if (currCell.isShown && currCell.isMine) strHTML += MINE
             else if (currCell.isShown) strHTML += currCell.minesAroundCount
 
             strHTML += '</td>'
@@ -154,4 +193,3 @@ function buildBoard() {
     }
     return board
 }
-

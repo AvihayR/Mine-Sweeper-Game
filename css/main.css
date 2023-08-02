@@ -64,6 +64,7 @@ td.boom {
 
 td.shown {
     background-color: var(--dark-blue);
+    color: var(--graphite)
 }
 
 footer {
@@ -74,6 +75,6 @@ footer {
     font-size: 20px;
     text-align: center;
     background-color: var(--light-cyan);
-    color: var(--graphite);
+    color: var(--indigo-blue);
     font-weight: 600;
 }
