@@ -1,16 +1,17 @@
 'use strict'
 
-//Neighbors loop
-function findNeighbors(board, rowIdx, colIdx) {
+//Neighbors loops:
+
+function findNegsLocations(board, location) {
     var negLocations = []
 
-    for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
+    for (var i = location.i - 1; i <= location.i + 1; i++) {
 
         if (i < 0 || i >= board.length) continue
 
-        for (var j = colIdx - 1; j <= colIdx + 1; j++) {
+        for (var j = location.j - 1; j <= location.j + 1; j++) {
 
-            if (i === rowIdx && j === colIdx) continue
+            if (i === location.i && j === location.j) continue
             if (j < 0 || j >= board[0].length) continue
 
             negLocations.push({ i, j })
@@ -20,41 +21,42 @@ function findNeighbors(board, rowIdx, colIdx) {
     return negLocations
 }
 
-function renderBoard(mat, selector) {
 
-    var strHTML = '<table border="0"><tbody>'
-    for (var i = 0; i < mat.length; i++) {
+function countMinesNegs(board, rowIdx, colIdx) {
+    var count = 0
 
-        strHTML += '<tr>'
-        for (var j = 0; j < mat[0].length; j++) {
+    for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
+        if (i < 0 || i >= board.length) continue
 
-            const cell = mat[i][j]
-            const className = 'cell cell-' + i + '-' + j
-            strHTML += `<td class="${className}">${cell}</td>`
+        for (var j = colIdx - 1; j <= colIdx + 1; j++) {
+            if (i === rowIdx && j === colIdx) continue
+            if (j < 0 || j >= board[0].length) continue
+
+            if (board[i][j].isMine) count++
         }
-        strHTML += '</tr>'
     }
-    strHTML += '</tbody></table>'
 
-    const elContainer = document.querySelector(selector)
-    elContainer.innerHTML = strHTML
+    return count
 }
 
-// location such as: {i: 2, j: 7}
-function renderCell(location, value) {
-    // Select the elCell and set the value
-    const elCell = document.querySelector(`.cell-${location.i}-${location.j}`)
-    elCell.innerHTML = value
-}
+// --------------------------------------------------------------
 
-function getRandomColor() {
-    var letters = '0123456789ABCDEF';
-    var color = '#';
-    for (var i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-}
+
+// // location such as: {i: 2, j: 7}
+// function renderCell(location, value) {
+//     // Select the elCell and set the value
+//     const elCell = document.querySelector(`.cell-${location.i}-${location.j}`)
+//     elCell.innerHTML = value
+// }
+
+// function getRandomColor() {
+//     var letters = '0123456789ABCDEF';
+//     var color = '#';
+//     for (var i = 0; i < 6; i++) {
+//         color += letters[Math.floor(Math.random() * 16)];
+//     }
+//     return color;
+// }
 
 function findLocationsInBoard(board, item) {
     var locations = []
@@ -67,29 +69,43 @@ function findLocationsInBoard(board, item) {
     return locations
 }
 
-function countItems(board, item) {
-    var count = 0
+// function countItems(board, item) {
+//     var count = 0
 
-    for (var i = 0; i < board.length; i++) {
-        for (var j = 0; j < board[0].length; i++) {
-            if (board[i][j] === item) count++
+//     for (var i = 0; i < board.length; i++) {
+//         for (var j = 0; j < board[0].length; i++) {
+//             if (board[i][j] === item) count++
+//         }
+//     }
+//     return count
+// }
+
+// function playSound(soundUrl) {
+//     var audio = new Audio(soundUrl);
+//     audio.play();
+// }
+
+// function shuffleBoard(board) {
+//     for (var i = board.length - 1; i > 0; i--) {
+//         var j = Math.floor(Math.random() * (i + 1));
+//         var temp = board[i];
+//         board[i] = board[j];
+//         board[j] = temp;
+//     }
+// }
+
+function getNRandomInts(n) {
+    var ints = []
+    for (var i = 0; i < n; i++) {
+        var currNum = getRandomInt(0, gBoard.length)
+
+        while (ints.includes(currNum)) {
+            currNum = getRandomInt(0, gBoard.length)
         }
-    }
-    return count
-}
 
-function playSound(soundUrl) {
-    var audio = new Audio(soundUrl);
-    audio.play();
-}
-
-function shuffleBoard(board) {
-    for (var i = board.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var temp = board[i];
-        board[i] = board[j];
-        board[j] = temp;
+        ints.push(currNum)
     }
+    return ints
 }
 
 function getRandomIntInclusive(min, max) {
@@ -106,14 +122,14 @@ function getRandomInt(min, max) {
 }
 
 
-function createMat(ROWS, COLS) {
-    const mat = []
-    for (var i = 0; i < ROWS; i++) {
-        const row = []
-        for (var j = 0; j < COLS; j++) {
-            row.push('')
-        }
-        mat.push(row)
-    }
-    return mat
-}
+// function createMat(ROWS, COLS) {
+//     const mat = []
+//     for (var i = 0; i < ROWS; i++) {
+//         const row = []
+//         for (var j = 0; j < COLS; j++) {
+//             row.push('')
+//         }
+//         mat.push(row)
+//     }
+//     return mat
+// }
