@@ -12,6 +12,15 @@
     <h1>Mine <span>Sweeper</span></h1>
 
     <div class="game">
+        <nav>
+            <button class="size" onclick="toggleSizeModal()">Board Size ▼ </button>
+        </nav>
+        <div class="modal size-selection hidden">
+            <h3>Select board size:</h3>
+            <button onclick="selectBoardSize(4, 2)">4X4</button>
+            <button onclick="selectBoardSize(8, 14)">8X8</button>
+            <button onclick="selectBoardSize(12, 32)">12X12</button>
+        </div>
 
         <table class="board">
             <tbody>

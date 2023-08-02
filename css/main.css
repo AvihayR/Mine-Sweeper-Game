@@ -6,10 +6,15 @@
     --light-cyan: #E0FBFC;
     --orange-bomb: #EE6C4D;
     --graphite: #293241;
+    --light-graphite: #293241e2;
     --cell-width: 50px;
     --cell-height: 55px;
     --h1-font-size: 2rem;
-    height: calc(100vh - var(--h1-font-size));
+    --modal-width: 50vw;
+    --modal-width: min(50vw, 250px);
+    --modal-height: min(15vh, 250px);
+    --root-height: calc(100vh - var(--h1-font-size));
+    height: var(--root-height)
 }
 
 * {
@@ -32,8 +37,49 @@ h1 span {
     color: var(--indigo-blue);
 }
 
+h3 {
+    color: var(--light-cyan);
+    text-shadow: 2px 2px var(--orange-bomb);
+}
+
 div.game {
-    margin-top: 150px;
+    margin-top: 50px;
+}
+
+nav {
+    text-align: center;
+}
+
+div.modal.size-selection {
+    position: absolute;
+    left: calc(50vw - var(--modal-width) / 2);
+    top: calc(50vh - var(--modal-height) * 1.8);
+    background-color: var(--light-graphite);
+    width: var(--modal-width);
+    height: var(--modal-height);
+    text-align: center;
+    border-radius: var(--border-radius);
+}
+
+.modal button,
+button.size {
+    margin: 3% auto;
+    height: 35px;
+    font-size: 1rem;
+    border: none;
+    background-color: var(--orange-bomb);
+    color: var(--light-cyan);
+    border-radius: calc(var(--border-radius) - 3px);
+    font-weight: 600;
+    transition: background-color 0.5s;
+    transition: color 0.6s;
+    cursor: pointer;
+}
+
+.modal button:hover,
+button.size:hover {
+    background-color: var(--light-cyan);
+    color: var(--orange-bomb);
 }
 
 table {
@@ -77,4 +123,8 @@ footer {
     background-color: var(--light-cyan);
     color: var(--indigo-blue);
     font-weight: 600;
+}
+
+.hidden {
+    display: none;
 }

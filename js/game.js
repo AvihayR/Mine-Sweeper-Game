@@ -2,10 +2,12 @@
 
 var MINE = '💣'
 var FLAG = '📍'
+
 var gBoard
 
 var gGame = {
     isOn: false,
+    isWinner: false,
     shownCount: 0,
     markedCount: 0,
     secsPassed: 0,
@@ -18,8 +20,13 @@ var gLevel = {
 
 function onInit() {
     gGame.isOn = true
+    gGame.isWinner = false
+    gGame.shownCount = 0
+    gGame.markedCount = 0
+    gGame.secsPassed = 0
+
     gBoard = buildBoard()
-    // randomizeMines()
+    randomizeMines(gBoard, gLevel.MINES)
     setMinesNegsCount(gBoard)
     renderBoard()
 }
@@ -69,17 +76,31 @@ function onCellMarked(ellCell, i, j) {
 
 function checkGameOver() {
     if (gGame.shownCount + gGame.markedCount === gLevel.SIZE * gLevel.SIZE) {
+        gGame.isWinner = true
         gameOver()
     }
 }
 
 function gameOver(elCell) {
-    console.log('Game over!')
     gGame.isOn = false
+
+    if (gGame.isWinner) console.log('You win!')
+    else {
+        renderAllMines()
+        console.log('Game over, you lose :(')
+    }
+
+}
+
+function renderAllMines() {
+    const allMineCells = findObjMines(gBoard)
+
+    allMineCells.forEach(cell => cell.isShown = true)
+    renderBoard()
 }
 
 function expandShown(location) {
-    const mineCount = countMinesNegs(gBoard, location.i, location.j)
+    const mineCount = countMines(gBoard, location.i, location.j)
     if (mineCount > 0) return
     const negLocations = findNegsLocations(gBoard, location)
 
@@ -98,7 +119,7 @@ function setMinesNegsCount(board) {
     for (var i = 0; i < board.length; i++) {
         for (var j = 0; j < board[0].length; j++) {
             const cell = board[i][j]
-            const mineCount = countMinesNegs(board, i, j)
+            const mineCount = countMines(board, i, j)
 
             cell.minesAroundCount = mineCount
         }
@@ -143,28 +164,23 @@ function renderCellsColor() {
     }
 }
 
-function randomizeMines() {
-    // const firstNum = getRandomInt(0, gBoard.length)
-    // const secondNum = getRandomInt(0, gBoard.length)
+function randomizeMines(board, count) {
     var locations = []
-    var randomInts = getNRandomInts(gLevel.MINES * 2)
+    var randomInts = getNRandomInts(count * 2)
 
-    for (var i = 0; i < gLevel.MINES; i++) {
-
+    for (var i = 0; i < count; i++) {
         const location = {
             i: randomInts.pop(),
             j: randomInts.pop()
         }
-
         locations.push(location)
     }
 
-    for (var i = 0; i <= locations.length; i++) {
+    for (var x = 0; x < count; x++) {
         const currLocation = locations.pop()
-        gBoard[currLocation.i][currLocation.j].isMine = true
-        // gBoard[currLocation.i][currLocation.j].isShown = true
+        board[currLocation.i][currLocation.j].isMine = true
+        console.log('x>=location.length? ', x <= locations.length, x, locations.length)
     }
-
 }
 
 function buildBoard() {
@@ -182,14 +198,26 @@ function buildBoard() {
             }
 
             //comment later:
-            if (i === 0 && j === 2 || i == 2 && j === 3) {
-                cell.isMine = true
-                // cell.isShown = true
-            }
+            // if (i === 0 && j === 2 || i == 2 && j === 3) {
+            //     cell.isMine = true
+            //     // cell.isShown = true
+            // }
 
             row.push(cell)
         }
         board.push(row)
     }
     return board
+}
+
+function selectBoardSize(size, mines) {
+    gLevel.SIZE = size
+    gLevel.MINES = mines
+    onInit()
+    toggleSizeModal()
+}
+
+function toggleSizeModal() {
+    const elModal = document.querySelector('.modal.size-selection')
+    elModal.classList.toggle('hidden')
 }
