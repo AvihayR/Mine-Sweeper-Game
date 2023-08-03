@@ -46,6 +46,14 @@
             <button onclick="selectBoardSize(12, 32)">12X12</button>
         </div>
 
+        <div class="modal game-over hidden">
+            <button class="close" onclick="hideGameOverModal()">X</button>
+            <h3>Game over</h3>
+            <p class="victory-state"></p>
+            <button onclick="onInit()" class="restart">Restart</button>
+        </div>
+
+
         <table class="board">
             <tbody>
             </tbody>

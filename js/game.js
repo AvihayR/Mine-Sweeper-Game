@@ -41,6 +41,7 @@ function onInit() {
     renderSmileyBtn()
     resetHintBtns()
     renderFlagsLeft()
+    // hideGameOverModal()
 }
 
 function onCellClicked(elCell, i, j) {
@@ -172,6 +173,27 @@ function mineClicked() {
     renderLives()
 }
 
+function renderGameOverModal() {
+    const elModal = document.querySelector('.modal.game-over')
+    const elPVictory = document.querySelector('p.victory-state')
+    var strHTML = ''
+    if (gGame.isWinner) {
+        strHTML += `Victorious, It took you ${gGame.secsPassed}s 🎉`
+    } else {
+        strHTML += 'You lose, Better luck next time!'
+    }
+
+    elPVictory.innerText = strHTML
+
+    elModal.classList.remove('hidden')
+    setTimeout(hideGameOverModal, 3500)
+}
+
+function hideGameOverModal() {
+    const elModal = document.querySelector('.modal.game-over')
+    elModal.classList.add('hidden')
+}
+
 function renderSmileyBtn() {
     const elBtn = document.querySelector('button.smiley')
     if (!gGame.isOn && gGame.isWinner) elBtn.innerText = '😎'
@@ -210,6 +232,12 @@ function gameOver(elCell) {
         renderAllMines()
         console.log('Game over, you lose :(')
     }
+
+    renderGameOverModal()
+
+}
+
+function storeBestTime() {
 
 }
 

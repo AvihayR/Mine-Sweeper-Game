@@ -55,11 +55,14 @@ nav {
 }
 
 nav div.hint-container {
-    display: inline;
+    display: inline-block;
+    height: 100%;
+    margin: auto;
     margin-left: 15px;
 }
 
 p,
+h3,
 h4,
 h5 {
     margin: 0;
@@ -95,7 +98,8 @@ h5 {
     font-size: 12px;
 }
 
-div.modal.size-selection {
+div.modal.size-selection,
+div.game-over {
     position: absolute;
     left: calc(50vw - var(--modal-width) / 2);
     top: calc(50vh - var(--modal-height) * 1.8);
@@ -104,11 +108,19 @@ div.modal.size-selection {
     height: var(--modal-height);
     text-align: center;
     border-radius: var(--border-radius);
+    padding: 15px;
+}
+
+div.modal.game-over p {
+    font-size: 14px;
+    color: var(--light-cyan);
+    text-shadow: 1px 1px 3px var(--light-cyan);
+    margin: 5px;
 }
 
 .modal button,
 nav button {
-    margin: 3% auto;
+    margin: auto;
     height: 35px;
     font-size: 1rem;
     border: none;
@@ -123,6 +135,18 @@ nav button {
 
 button.size {
     margin: 15px;
+}
+
+button.close {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    height: 15px;
+    font-size: 12px;
+}
+
+button.restart {
+    margin-top: 10px;
 }
 
 .modal button:hover,
