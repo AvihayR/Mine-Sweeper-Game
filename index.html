@@ -27,6 +27,11 @@
                 <p> <span class="timer"></span>⌛</p>
             </div>
 
+            <div class="scoreboard-container" onclick="renderScoreboardModal()">
+                <h5>Scoreboard</h5>
+                <p>🏆</p>
+            </div>
+
         </nav>
         <br>
         <nav>
@@ -41,9 +46,9 @@
 
         <div class="modal size-selection hidden">
             <h3>Select board size:</h3>
-            <button onclick="selectBoardSize(4, 2)">4X4</button>
-            <button onclick="selectBoardSize(8, 14)">8X8</button>
-            <button onclick="selectBoardSize(12, 32)">12X12</button>
+            <button onclick="selectBoardSize(4, 2, 'easy')">4X4</button>
+            <button onclick="selectBoardSize(8, 14, 'medium')">8X8</button>
+            <button onclick="selectBoardSize(12, 32, 'expert')">12X12</button>
         </div>
 
         <div class="modal game-over hidden">
@@ -53,6 +58,15 @@
             <button onclick="onInit()" class="restart">Restart</button>
         </div>
 
+        <div class="modal scoreboard hidden">
+            <button class="close" onclick="hideScoreboardModal()">X</button>
+            <h5>Easy (4x4):</h5>
+            <p class="easy">1</p>
+            <h5>Medium (8x8):</h5>
+            <p class="medium">1</p>
+            <h5>Expert (12x12):</h5>
+            <p class="expert">1</p>
+        </div>
 
         <table class="board">
             <tbody>

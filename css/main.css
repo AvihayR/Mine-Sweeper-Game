@@ -82,7 +82,8 @@ div.lives-container {
 
 
 div.marked-count-container,
-div.timer-container {
+div.timer-container,
+div.scoreboard-container {
     display: inline-block;
     background-color: var(--powder-blue);
     border: 1px solid var(--dark-blue);
@@ -94,12 +95,17 @@ div.timer-container {
     padding: 5px;
 }
 
+div.scoreboard-container {
+    cursor: pointer;
+}
+
 h5 {
     font-size: 12px;
 }
 
 div.modal.size-selection,
-div.game-over {
+div.game-over,
+div.modal.scoreboard {
     position: absolute;
     left: calc(50vw - var(--modal-width) / 2);
     top: calc(50vh - var(--modal-height) * 1.8);

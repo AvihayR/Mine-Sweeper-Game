@@ -20,7 +20,8 @@ var gGame = {
 
 var gLevel = {
     SIZE: 4,
-    MINES: 2
+    MINES: 2,
+    DIFFICULTY: 'easy',
 }
 
 function onInit() {
@@ -33,7 +34,6 @@ function onInit() {
     gGame.isFirstClick = true
     gGame.lives = 3
     gHintCount = 3
-
     gBoard = buildBoard()
     renderBoard()
     resetTimer()
@@ -100,6 +100,34 @@ function onCellMarked(ellCell, i, j) {
 
     renderFlagsLeft()
     checkGameOver()
+}
+
+function renderScoreboardModal() {
+    const elModal = document.querySelector('.modal.scoreboard')
+    elModal.classList.remove('hidden')
+    setTimeout(hideScoreboardModal, 3000)
+}
+
+function hideScoreboardModal() {
+    const elModal = document.querySelector('.modal.scoreboard')
+    elModal.classList.add('hidden')
+}
+
+function checkBestScores() {
+    // console.log(gLevel.DIFFICULTY)
+    // localStorage.clear();
+    var currDifficulty = localStorage.getItem(`${gLevel.DIFFICULTY}`);
+
+    if (currDifficulty === null) {
+        localStorage.setItem(`${gLevel.DIFFICULTY}`, `${Infinity}`)
+    } else {
+        if (gGame.secsPassed > 0 && gGame.secsPassed < currDifficulty) {
+            localStorage.setItem(`${gLevel.DIFFICULTY}`, `${gGame.secsPassed}`)
+            return
+        }
+        localStorage.getItem(`${gLevel.DIFFICULTY}`);
+    }
+    return currDifficulty
 }
 
 function renderTimer() {
@@ -354,9 +382,10 @@ function buildBoard() {
     return board
 }
 
-function selectBoardSize(size, mines) {
+function selectBoardSize(size, mines, difficulty) {
     gLevel.SIZE = size
     gLevel.MINES = mines
+    gLevel.DIFFICULTY = difficulty
     onInit()
     toggleSizeModal()
 }
