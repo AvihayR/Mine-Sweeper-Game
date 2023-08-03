@@ -60,7 +60,8 @@ nav div.hint-container {
 }
 
 p,
-h4 {
+h4,
+h5 {
     margin: 0;
 }
 
@@ -74,6 +75,22 @@ div.lives-container {
     font-size: 18px;
     color: var(--indigo-blue);
     text-shadow: 1px 1px var(--powder-blue);
+}
+
+
+div.marked-count-container {
+    background-color: var(--powder-blue);
+    border: 1px solid var(--dark-blue);
+    border-radius: var(--border-radius);
+    width: 100px;
+    text-align: center;
+    margin: auto;
+    font-size: 25px;
+    padding: 5px;
+}
+
+div.marked-count-container h5 {
+    font-size: 12px;
 }
 
 div.modal.size-selection {

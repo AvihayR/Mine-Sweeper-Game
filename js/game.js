@@ -38,6 +38,7 @@ function onInit() {
     renderLives()
     renderSmileyBtn()
     resetHintBtns()
+    renderFlagsLeft()
 }
 
 function onCellClicked(elCell, i, j) {
@@ -93,7 +94,13 @@ function onCellMarked(ellCell, i, j) {
         ellCell.innerText = FLAG
     }
 
+    renderFlagsLeft()
     checkGameOver()
+}
+
+function renderFlagsLeft() {
+    const elSpan = document.querySelector('span.marked-count')
+    elSpan.innerText = gLevel.MINES - gGame.markedCount
 }
 
 function enableHintMode(elBtn) {
