@@ -12,6 +12,7 @@ var gGame = {
     markedCount: 0,
     secsPassed: 0,
     isFirstClick: true,
+    lives: 3
 }
 
 var gLevel = {
@@ -26,9 +27,12 @@ function onInit() {
     gGame.markedCount = 0
     gGame.secsPassed = 0
     gGame.isFirstClick = true
+    gGame.lives = 3
 
     gBoard = buildBoard()
     renderBoard()
+    renderLives()
+    renderSmileyBtn()
 }
 
 function onCellClicked(elCell, i, j) {
@@ -47,7 +51,7 @@ function onCellClicked(elCell, i, j) {
     gGame.shownCount++
 
     if (gBoard[i][j].isMine) {
-        gameOver()
+        mineClicked()
     }
 
     expandShown({ i, j })
@@ -80,6 +84,36 @@ function onCellMarked(ellCell, i, j) {
     checkGameOver()
 }
 
+function mineClicked() {
+    //Model:
+    gGame.lives--
+    if (gGame.lives === 0) gameOver()
+
+    //DOM:
+    renderLives()
+}
+
+function renderSmileyBtn() {
+    const elBtn = document.querySelector('button.smiley')
+    if (!gGame.isOn && gGame.isWinner) elBtn.innerText = '😎'
+    else if (!gGame.isOn && !gGame.isWinner) elBtn.innerText = '🤯'
+    else elBtn.innerText = '😃'
+}
+
+function renderLives() {
+    // console.log(gGame.lives, 'Lives left')
+    const elLiveContainer = document.querySelector('.lives-container p')
+    var strInnerText = ''
+
+    for (var i = 0; i < gGame.lives; i++) {
+        strInnerText += '💖 '
+    }
+
+    if (gGame.lives === 0) strInnerText = '💀'
+
+    elLiveContainer.innerText = strInnerText
+}
+
 function checkGameOver() {
     if (gGame.shownCount + gGame.markedCount === gLevel.SIZE * gLevel.SIZE) {
         gGame.isWinner = true
@@ -89,6 +123,7 @@ function checkGameOver() {
 
 function gameOver(elCell) {
     gGame.isOn = false
+    renderSmileyBtn()
 
     if (gGame.isWinner) console.log('You win!')
     else {

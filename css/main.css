@@ -50,6 +50,23 @@ nav {
     text-align: center;
 }
 
+p,
+h4 {
+    margin: 0;
+}
+
+div.lives-container {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+.lives-container h4 {
+    font-size: 18px;
+    color: var(--indigo-blue);
+    text-shadow: 1px 1px var(--powder-blue);
+}
+
 div.modal.size-selection {
     position: absolute;
     left: calc(50vw - var(--modal-width) / 2);
@@ -62,7 +79,7 @@ div.modal.size-selection {
 }
 
 .modal button,
-button.size {
+nav button {
     margin: 3% auto;
     height: 35px;
     font-size: 1rem;
@@ -81,7 +98,7 @@ button.size {
 }
 
 .modal button:hover,
-button.size:hover {
+nav button:hover {
     background-color: var(--light-cyan);
     color: var(--orange-bomb);
 }

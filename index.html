@@ -12,8 +12,14 @@
     <h1>Mine <span>Sweeper</span></h1>
 
     <div class="game">
+        <div class="lives-container">
+            <h4>Lives left:</h4>
+            <p></p>
+        </div>
+
         <nav>
             <button class="size" onclick="toggleSizeModal()">Board Size ▼ </button>
+            <button class="smiley" onclick="onInit()">😃</button>
         </nav>
         <div class="modal size-selection hidden">
             <h3>Select board size:</h3>
