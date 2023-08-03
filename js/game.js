@@ -4,10 +4,12 @@ var MINE = '💣'
 var FLAG = '📍'
 
 var gBoard
+var gHintCount
 
 var gGame = {
     isOn: false,
     isWinner: false,
+    isHintMode: false,
     shownCount: 0,
     markedCount: 0,
     secsPassed: 0,
@@ -23,16 +25,19 @@ var gLevel = {
 function onInit() {
     gGame.isOn = true
     gGame.isWinner = false
+    gGame.isHintMode = false
     gGame.shownCount = 0
     gGame.markedCount = 0
     gGame.secsPassed = 0
     gGame.isFirstClick = true
     gGame.lives = 3
+    gHintCount = 3
 
     gBoard = buildBoard()
     renderBoard()
     renderLives()
     renderSmileyBtn()
+    resetHintBtns()
 }
 
 function onCellClicked(elCell, i, j) {
@@ -46,6 +51,10 @@ function onCellClicked(elCell, i, j) {
     if (!gGame.isOn) return
     if (gBoard[i][j].isMarked) return
     if (gBoard[i][j].isShown) return
+    if (gGame.isHintMode) {
+        flashHintCells(elCell, i, j)
+        return
+    }
 
     gBoard[i][j].isShown = true
     gGame.shownCount++
@@ -82,6 +91,58 @@ function onCellMarked(ellCell, i, j) {
     }
 
     checkGameOver()
+}
+
+function enableHintMode(elBtn) {
+    if (elBtn.classList.contains('selected')) return
+    renderHintBtn(elBtn)
+
+    gGame.isHintMode = true
+    gHintCount--
+}
+
+function renderHintBtn(elBtn) {
+    if (gGame.isHintMode) return
+
+    var strHTML = '<img src="img/light-off.png" alt="light-bulb-off">'
+    elBtn.innerHTML = strHTML
+    elBtn.classList.add('selected')
+}
+
+function resetHintBtns() {
+    var strHTML = ''
+    const elBtns = document.querySelectorAll('button.light')
+
+    strHTML += '<img src="img/light-on.png" alt="light-bulb-on"></img>'
+
+    elBtns.forEach(
+        btn => {
+            btn.innerHTML = strHTML
+            btn.classList.remove('selected')
+        }
+    )
+}
+
+function flashHintCells(elCell, i, j) {
+    if (!gGame.isHintMode) return
+    //Model:
+    const allNegsLocations = findNegsLocations(gBoard, { i, j })
+    allNegsLocations.push({ i, j }) //Add clicked location
+
+    //DOM Flash Cells for a second:
+    allNegsLocations.forEach(n => gBoard[n.i][n.j].isShown = true)
+    renderBoard()
+
+    //DOM Hide them after a second:
+    setTimeout(
+        () => {
+            allNegsLocations.forEach(n => gBoard[n.i][n.j].isShown = false)
+            renderBoard()
+        },
+        1000
+    )
+
+    gGame.isHintMode = false
 }
 
 function mineClicked() {

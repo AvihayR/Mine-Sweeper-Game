@@ -54,17 +54,6 @@ function countMines(board, rowIdx, colIdx) {
 // --------------------------------------------------------------
 
 
-function findLocationsInBoard(board, item) {
-    var locations = []
-
-    for (var i = 0; i < board.length; i++) {
-        for (var j = 0; j < board[0].length; j++) {
-            if (board[i][j] === item) locations.push({ i, j })
-        }
-    }
-    return locations
-}
-
 function getRandomIntInclusive(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);

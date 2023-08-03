@@ -20,7 +20,13 @@
         <nav>
             <button class="size" onclick="toggleSizeModal()">Board Size ▼ </button>
             <button class="smiley" onclick="onInit()">😃</button>
+            <div class="hint-container">
+                <button class="light" onclick="enableHintMode(this)"></button>
+                <button class="light" onclick="enableHintMode(this)"></button>
+                <button class="light" onclick="enableHintMode(this)"></button>
+            </div>
         </nav>
+
         <div class="modal size-selection hidden">
             <h3>Select board size:</h3>
             <button onclick="selectBoardSize(4, 2)">4X4</button>
