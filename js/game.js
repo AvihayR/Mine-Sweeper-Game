@@ -48,18 +48,21 @@ function onCellClicked(elCell, i, j) {
         renderBoard()
         gGame.isFirstClick = false
     }
+    const currCell = gBoard[i][j]
     if (!gGame.isOn) return
-    if (gBoard[i][j].isMarked) return
-    if (gBoard[i][j].isShown) return
+    if (currCell.isMarked) return
+    if (currCell.isShown) return
     if (gGame.isHintMode) {
         flashHintCells(elCell, i, j)
         return
     }
+    if (!currCell.isShown) {
+        currCell.isShown = true
+        gGame.shownCount++
+    }
 
-    gBoard[i][j].isShown = true
-    gGame.shownCount++
 
-    if (gBoard[i][j].isMine) {
+    if (currCell.isMine) {
         mineClicked()
     }
 
@@ -130,13 +133,13 @@ function flashHintCells(elCell, i, j) {
     allNegsLocations.push({ i, j }) //Add clicked location
 
     //DOM Flash Cells for a second:
-    allNegsLocations.forEach(n => gBoard[n.i][n.j].isShown = true)
+    allNegsLocations.forEach(n => gBoard[n.i][n.j].isFlashed = true)
     renderBoard()
 
     //DOM Hide them after a second:
     setTimeout(
         () => {
-            allNegsLocations.forEach(n => gBoard[n.i][n.j].isShown = false)
+            allNegsLocations.forEach(n => gBoard[n.i][n.j].isFlashed = false)
             renderBoard()
         },
         1000
@@ -239,6 +242,8 @@ function renderBoard() {
             strHTML += `<td data-i="${i}" data-j="${j}" onclick="onCellClicked(this, ${i}, ${j})"  oncontextmenu="onCellMarked(this, ${i}, ${j})">`
 
             if (currCell.isMarked) strHTML += FLAG
+            else if (currCell.isFlashed && currCell.isMine) strHTML += MINE
+            else if (currCell.isFlashed) strHTML += currCell.minesAroundCount
             else if (currCell.isShown && currCell.isMine) strHTML += MINE
             else if (currCell.isShown) strHTML += currCell.minesAroundCount
 
@@ -261,8 +266,9 @@ function renderCellsColor() {
         const currTd = elTds[i]
         const currCellModel = gBoard[currTd.dataset.i][currTd.dataset.j]
         //Model
-        if (currCellModel.isMine && currCellModel.isShown) currTd.classList.add('boom')
-        else if (currCellModel.isShown) currTd.classList.add('shown')
+        if (currCellModel.isMine && currCellModel.isFlashed) currTd.classList.add('boom')
+        else if (currCellModel.isMine && currCellModel.isShown) currTd.classList.add('boom')
+        else if (currCellModel.isShown || currCellModel.isFlashed) currTd.classList.add('shown')
     }
 }
 
@@ -292,15 +298,10 @@ function buildBoard() {
             var cell = {
                 minesAroundCount: 0,
                 isShown: false,
+                isFlashed: false,
                 isMine: false,
                 isMarked: false
             }
-
-            //comment later:
-            // if (i === 0 && j === 2 || i == 2 && j === 3) {
-            //     cell.isMine = true
-            //     // cell.isShown = true
-            // }
 
             row.push(cell)
         }
