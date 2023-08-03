@@ -1,6 +1,21 @@
 'use strict'
 
-function findObjMines(board) {
+function resetTimer() {
+    clearInterval(gTimerIntervalId)
+    gTimerIntervalId = 0
+    renderTimer()
+}
+
+function startTimer() {
+    var start = Date.now();
+    gTimerIntervalId = setInterval(() => {
+        var delta = Date.now() - start;
+        gGame.secsPassed = Math.round(delta / 1000)
+        renderTimer()
+    }, 1);
+}
+
+function findMinesInBoard(board) {
     var allMineCells = []
 
     for (var i = 0; i < board.length; i++) {

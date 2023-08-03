@@ -78,7 +78,9 @@ div.lives-container {
 }
 
 
-div.marked-count-container {
+div.marked-count-container,
+div.timer-container {
+    display: inline-block;
     background-color: var(--powder-blue);
     border: 1px solid var(--dark-blue);
     border-radius: var(--border-radius);
@@ -89,7 +91,7 @@ div.marked-count-container {
     padding: 5px;
 }
 
-div.marked-count-container h5 {
+h5 {
     font-size: 12px;
 }
 

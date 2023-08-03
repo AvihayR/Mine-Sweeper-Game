@@ -5,6 +5,7 @@ var FLAG = '📍'
 
 var gBoard
 var gHintCount
+var gTimerIntervalId
 
 var gGame = {
     isOn: false,
@@ -35,6 +36,7 @@ function onInit() {
 
     gBoard = buildBoard()
     renderBoard()
+    resetTimer()
     renderLives()
     renderSmileyBtn()
     resetHintBtns()
@@ -47,6 +49,7 @@ function onCellClicked(elCell, i, j) {
         randomizeMines(gBoard, { i, j })
         setMinesNegsCount(gBoard)
         renderBoard()
+        startTimer()
         gGame.isFirstClick = false
     }
     const currCell = gBoard[i][j]
@@ -96,6 +99,11 @@ function onCellMarked(ellCell, i, j) {
 
     renderFlagsLeft()
     checkGameOver()
+}
+
+function renderTimer() {
+    const elTimer = document.querySelector('span.timer')
+    elTimer.innerText = gGame.secsPassed
 }
 
 function renderFlagsLeft() {
@@ -194,6 +202,7 @@ function checkGameOver() {
 
 function gameOver(elCell) {
     gGame.isOn = false
+    resetTimer()
     renderSmileyBtn()
 
     if (gGame.isWinner) console.log('You win!')
@@ -205,7 +214,7 @@ function gameOver(elCell) {
 }
 
 function renderAllMines() {
-    const allMineCells = findObjMines(gBoard)
+    const allMineCells = findMinesInBoard(gBoard)
 
     allMineCells.forEach(cell => cell.isShown = true)
     renderBoard()
