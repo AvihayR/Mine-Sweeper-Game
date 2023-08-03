@@ -65,51 +65,6 @@ function findLocationsInBoard(board, item) {
     return locations
 }
 
-function getRandLocations(count) {
-    var locations = []
-    var randomInts = getNRandomInts(count ** 2)
-
-    for (var i = 0; i < count; i++) {
-        var location = {
-            i: randomInts.pop(),
-            j: randomInts.pop()
-        }
-
-        locations.push(location)
-
-        for (var x = 0; x < locations.length - 1; x++) {
-
-            while (locations[x].i === location.i &&
-                locations[x].j === location.j) {
-                // console.log('dupe', location.i, location.j, locations[x].i, locations[x].j)
-
-                locations.pop()
-
-                location = {
-                    i: randomInts.pop(),
-                    j: randomInts.pop()
-                }
-
-                locations.push(location)
-
-            }
-        }
-
-
-    }
-
-    return locations
-}
-
-function getNRandomInts(n) {
-    var ints = []
-    for (var i = 0; i < n; i++) {
-        var currNum = getRandomInt(0, gBoard.length)
-        ints.push(currNum)
-    }
-    return ints
-}
-
 function getRandomIntInclusive(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);

@@ -11,6 +11,7 @@ var gGame = {
     shownCount: 0,
     markedCount: 0,
     secsPassed: 0,
+    isFirstClick: true,
 }
 
 var gLevel = {
@@ -24,16 +25,21 @@ function onInit() {
     gGame.shownCount = 0
     gGame.markedCount = 0
     gGame.secsPassed = 0
+    gGame.isFirstClick = true
 
     gBoard = buildBoard()
-    randomizeMines(gBoard, gLevel.MINES)
-    setMinesNegsCount(gBoard)
     renderBoard()
 }
 
 function onCellClicked(elCell, i, j) {
-    if (!gGame.isOn) return
 
+    if (gGame.isFirstClick) {
+        randomizeMines(gBoard, { i, j })
+        setMinesNegsCount(gBoard)
+        renderBoard()
+        gGame.isFirstClick = false
+    }
+    if (!gGame.isOn) return
     if (gBoard[i][j].isMarked) return
     if (gBoard[i][j].isShown) return
 
@@ -164,12 +170,20 @@ function renderCellsColor() {
     }
 }
 
-function randomizeMines(board, count) {
-    var randLocations = getRandLocations(count)
+function randomizeMines(board, safeCell) {
+    var mineCount = gLevel.MINES
+    var minesRandomized = 0
 
-    for (var x = 0; x < count; x++) {
-        const currLocation = randLocations.pop()
-        board[currLocation.i][currLocation.j].isMine = true
+    while (minesRandomized < mineCount) {
+        var i = getRandomInt(0, board.length);
+        var j = getRandomInt(0, board.length);
+
+        if (i !== safeCell.i && j !== safeCell.j) {
+            if (!gBoard[i][j].isMine) {
+                gBoard[i][j].isMine = true
+                minesRandomized++
+            }
+        }
     }
 }
 
@@ -182,7 +196,6 @@ function buildBoard() {
             var cell = {
                 minesAroundCount: 0,
                 isShown: false,
-                // isShown: true,
                 isMine: false,
                 isMarked: false
             }
