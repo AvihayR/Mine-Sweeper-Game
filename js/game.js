@@ -6,6 +6,7 @@ var FLAG = '📍'
 var gBoard
 var gHintCount
 var gTimerIntervalId
+var gScoreboardTimeOutID
 
 var gGame = {
     isOn: false,
@@ -103,9 +104,25 @@ function onCellMarked(ellCell, i, j) {
 }
 
 function renderScoreboardModal() {
-    const elModal = document.querySelector('.modal.scoreboard')
-    elModal.classList.remove('hidden')
-    setTimeout(hideScoreboardModal, 3000)
+    const elScoreModal = document.querySelector('.modal.scoreboard')
+    const elAllScores = document.querySelectorAll('.modal.scoreboard p')
+
+    for (var i = 0; i < elAllScores.length; i++) {
+        const currElScore = elAllScores[i]
+        const currDifficulty = elAllScores[i].classList[0]
+        var currStoredScore = localStorage.getItem(currDifficulty)
+
+        if (currStoredScore === null) currStoredScore = 'Not recorded yet'
+        else { currStoredScore += ' S' }
+
+        //DOM:
+        currElScore.innerText = currStoredScore
+    }
+
+    elScoreModal.classList.remove('hidden')
+    clearTimeout(gScoreboardTimeOutID)
+    gScoreboardTimeOutID = setTimeout(hideScoreboardModal, 3000)
+
 }
 
 function hideScoreboardModal() {
@@ -113,13 +130,13 @@ function hideScoreboardModal() {
     elModal.classList.add('hidden')
 }
 
-function checkBestScores() {
+function updateBestScores() {
     // console.log(gLevel.DIFFICULTY)
     // localStorage.clear();
     var currDifficulty = localStorage.getItem(`${gLevel.DIFFICULTY}`);
 
-    if (currDifficulty === null) {
-        localStorage.setItem(`${gLevel.DIFFICULTY}`, `${Infinity}`)
+    if (currDifficulty === null && gGame.isWinner) {
+        localStorage.setItem(`${gLevel.DIFFICULTY}`, `${gGame.secsPassed}`)
     } else {
         if (gGame.secsPassed > 0 && gGame.secsPassed < currDifficulty) {
             localStorage.setItem(`${gLevel.DIFFICULTY}`, `${gGame.secsPassed}`)
@@ -127,6 +144,7 @@ function checkBestScores() {
         }
         localStorage.getItem(`${gLevel.DIFFICULTY}`);
     }
+
     return currDifficulty
 }
 
@@ -255,7 +273,7 @@ function gameOver(elCell) {
     resetTimer()
     renderSmileyBtn()
 
-    if (gGame.isWinner) console.log('You win!')
+    if (gGame.isWinner) updateBestScores()
     else {
         renderAllMines()
         console.log('Game over, you lose :(')

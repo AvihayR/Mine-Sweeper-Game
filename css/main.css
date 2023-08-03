@@ -117,7 +117,18 @@ div.modal.scoreboard {
     padding: 15px;
 }
 
-div.modal.game-over p {
+div.modal.scoreboard {
+    height: calc(var(--modal-height) +25vh);
+}
+
+div.modal.scoreboard h5 {
+    font-size: 15px;
+    color: var(--orange-bomb);
+    text-shadow: 1px 2px var(--graphite);
+}
+
+div.modal.game-over p,
+div.modal.scoreboard p {
     font-size: 14px;
     color: var(--light-cyan);
     text-shadow: 1px 1px 3px var(--light-cyan);
