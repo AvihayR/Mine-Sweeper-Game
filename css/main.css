@@ -56,6 +56,13 @@ nav {
     text-align: center;
 }
 
+nav.flexed-nav {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+}
+
 nav div.hint-container {
     display: inline-block;
     height: 100%;
@@ -179,6 +186,11 @@ button.selected {
     border: 1px solid var(--orange-bomb);
 }
 
+div.safe-click-container {
+    display: flex;
+    flex-direction: column;
+}
+
 button.safe-click {
     background-color: var(--indigo-blue);
     border: 1px solid var(--powder-blue);
@@ -187,6 +199,18 @@ button.safe-click {
 label.safe-click {
     font-size: 12px;
     font-weight: 600;
+    color: var(--indigo-blue);
+    text-shadow: 1px 2px var(--light-cyan);
+}
+
+button.undo {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    margin: 0;
+    background-color: var(--light-cyan);
+    color: var(--indigo-blue);
+    border: 2px solid var(--indigo-blue);
 }
 
 table {

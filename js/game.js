@@ -4,11 +4,15 @@ var MINE = '💣'
 var FLAG = '📍'
 
 var gBoard
-var gHintCount
-var gSafeClicksCount
+
 var gTimerIntervalId
 var gScoreboardTimeOutID
+var gSecsPassed
 
+var gSnapshotVault = {
+    boards: [],
+    games: [],
+}
 
 var gGame = {
     isOn: false,
@@ -16,9 +20,10 @@ var gGame = {
     isHintMode: false,
     shownCount: 0,
     markedCount: 0,
-    secsPassed: 0,
     isFirstClick: true,
-    lives: 3
+    lives: 3,
+    hintCount: 3,
+    safeClicksCount: 3,
 }
 
 var gLevel = {
@@ -33,11 +38,12 @@ function onInit() {
     gGame.isHintMode = false
     gGame.shownCount = 0
     gGame.markedCount = 0
-    gGame.secsPassed = 0
+    // gGame.secsPassed = 0
+    gSecsPassed = 0
     gGame.isFirstClick = true
     gGame.lives = 3
-    gHintCount = 3
-    gSafeClicksCount = 3
+    gGame.hintCount = 3
+    gGame.safeClicksCount = 3
     gBoard = buildBoard()
     renderBoard()
     resetTimer()
@@ -62,10 +68,15 @@ function onCellClicked(elCell, i, j) {
     if (!gGame.isOn) return
     if (currCell.isMarked) return
     if (currCell.isShown) return
+
+
     if (gGame.isHintMode) {
         flashHintCells(elCell, i, j)
         return
     }
+
+    takeSnapshot()
+
     if (!currCell.isShown) {
         currCell.isShown = true
         gGame.shownCount++
@@ -107,22 +118,46 @@ function onCellMarked(ellCell, i, j) {
     checkVictory()
 }
 
+function restoreFromLastSnapshot() {
+    //Restore board & game status from last snapshot in 'storage'
+    if (gSnapshotVault.boards.length === 0 || gSnapshotVault.games.length === 0) return
+
+    gBoard = gSnapshotVault.boards.pop()
+    gGame = gSnapshotVault.games.pop()
+    renderLives()
+    renderSmileyBtn()
+    renderFlagsLeft()
+    renderSafeClicksCount()
+    renderBoard()
+}
+
+function takeSnapshot() {
+    //Take baord & game status snapshots for Undo feature
+    const deepClonedBoard = JSON.parse(JSON.stringify(gBoard))
+    const deepClonedGame = JSON.parse(JSON.stringify(gGame))
+
+    gSnapshotVault.boards.push(deepClonedBoard)
+    gSnapshotVault.games.push(deepClonedGame)
+
+}
+
 function renderSafeLocation() {
-    if (gSafeClicksCount <= 0) return
+    if (gGame.safeClicksCount <= 0) return
     if (!gGame.isOn) return
+    takeSnapshot()
 
     const safeLocation = findRandSafeLocation()
     const elCell = document.querySelector(`[data-i="${safeLocation.i}"][data-j="${safeLocation.j}"]`)
 
     elCell.classList.add('safe-location')
     setTimeout(() => elCell.classList.remove('safe-location'), 3500)
-    gSafeClicksCount--
+    gGame.safeClicksCount--
     renderSafeClicksCount()
 }
 
 function renderSafeClicksCount() {
     const elSpan = document.querySelector('label.safe-click span')
-    elSpan.innerText = gSafeClicksCount
+    elSpan.innerText = gGame.safeClicksCount
 }
 
 function renderScoreboardModal() {
@@ -158,10 +193,10 @@ function updateBestScores() {
     var currDifficulty = localStorage.getItem(`${gLevel.DIFFICULTY}`);
 
     if (currDifficulty === null && gGame.isWinner) {
-        localStorage.setItem(`${gLevel.DIFFICULTY}`, `${gGame.secsPassed}`)
+        localStorage.setItem(`${gLevel.DIFFICULTY}`, `${gSecsPassed}`)
     } else {
-        if (gGame.secsPassed > 0 && gGame.secsPassed < currDifficulty) {
-            localStorage.setItem(`${gLevel.DIFFICULTY}`, `${gGame.secsPassed}`)
+        if (gSecsPassed > 0 && gSecsPassed < currDifficulty) {
+            localStorage.setItem(`${gLevel.DIFFICULTY}`, `${gSecsPassed}`)
             return
         }
         localStorage.getItem(`${gLevel.DIFFICULTY}`);
@@ -172,7 +207,7 @@ function updateBestScores() {
 
 function renderTimer() {
     const elTimer = document.querySelector('span.timer')
-    elTimer.innerText = gGame.secsPassed
+    elTimer.innerText = gSecsPassed
 }
 
 function renderFlagsLeft() {
@@ -181,16 +216,19 @@ function renderFlagsLeft() {
 }
 
 function enableHintMode(elBtn) {
-    if (elBtn.classList.contains('selected')) return
+    // if (elBtn.classList.contains('selected')) return
+    if (gGame.isHintMode) return
+    if (gGame.hintCount <= 0) return
     if (!gGame.isOn) return
+    takeSnapshot()
 
-    renderHintBtn(elBtn)
+    renderUsedHintBtn(elBtn)
 
     gGame.isHintMode = true
-    gHintCount--
+    gGame.hintCount--
 }
 
-function renderHintBtn(elBtn) {
+function renderUsedHintBtn(elBtn) {
     if (gGame.isHintMode) return
 
     var strHTML = '<img src="img/light-off.png" alt="light-bulb-off">'
@@ -246,7 +284,7 @@ function renderGameEndModal() {
     const elPVictory = document.querySelector('p.victory-state')
     var strHTML = ''
     if (gGame.isWinner) {
-        strHTML += `Victorious, It took you ${gGame.secsPassed}s 🎉`
+        strHTML += `Victorious, It took you ${gSecsPassed}s 🎉`
     } else {
         strHTML += 'You lose, Better luck next time!'
     }

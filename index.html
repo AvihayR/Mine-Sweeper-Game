@@ -27,26 +27,30 @@
                 <p> <span class="timer"></span>⌛</p>
             </div>
 
-            <div class="scoreboard-container" onclick="renderScoreboardModal()">
+            <div class="scoreboard-container" title="Show the scoreboard" onclick="renderScoreboardModal()">
                 <h5>Scoreboard</h5>
                 <p>🏆</p>
             </div>
 
         </nav>
         <br>
-        <nav>
-            <button id="safe-click" class="safe-click" onclick="renderSafeLocation()">Safe Click</button>
-            <br>
-            <label for="safe-click" class="safe-click"> <span></span> Clicks left</label>
+        <nav class="flexed-nav">
+            <div class="safe-click-container">
+                <button id="safe-click" class="safe-click" title="Flash a safe cell on the board"
+                    onclick="renderSafeLocation()">Safe Click</button>
+                <label for="safe-click" class="safe-click"> <span></span> Clicks left</label>
+            </div>
+            <button title="Undo previous turn" class="undo" onclick="restoreFromLastSnapshot()"><span>Undo </span><img
+                    src="img/undo.png" alt="" srcset=""> </button>
         </nav>
         <br>
         <nav>
-            <button class="size" onclick="toggleBoardSizeModal()">Board Size ▼ </button>
-            <button class="smiley" onclick="onInit()">😃</button>
+            <button class="size" title="Select board size" onclick="toggleBoardSizeModal()">Board Size ▼ </button>
+            <button class="smiley" title="Reset game" onclick="onInit()">😃</button>
             <div class="hint-container">
-                <button class="light" onclick="enableHintMode(this)"></button>
-                <button class="light" onclick="enableHintMode(this)"></button>
-                <button class="light" onclick="enableHintMode(this)"></button>
+                <button class="light" title="Use hint Mode" onclick="enableHintMode(this)"></button>
+                <button class="light" title="Use hint Mode" onclick="enableHintMode(this)"></button>
+                <button class="light" title="Use hint Mode" onclick="enableHintMode(this)"></button>
             </div>
         </nav>
 
