@@ -46,7 +46,7 @@ function onInit() {
     resetHintBtns()
     renderFlagsLeft()
     renderSafeClicksCount()
-    // hideGameOverModal()
+    hideGameOverModal()
 }
 
 function onCellClicked(elCell, i, j) {
@@ -107,8 +107,9 @@ function onCellMarked(ellCell, i, j) {
     checkVictory()
 }
 
-function renderRandomSafeLocation() {
+function renderSafeLocation() {
     if (gSafeClicksCount <= 0) return
+    if (!gGame.isOn) return
 
     const safeLocation = findRandSafeLocation()
     const elCell = document.querySelector(`[data-i="${safeLocation.i}"][data-j="${safeLocation.j}"]`)
@@ -181,6 +182,8 @@ function renderFlagsLeft() {
 
 function enableHintMode(elBtn) {
     if (elBtn.classList.contains('selected')) return
+    if (!gGame.isOn) return
+
     renderHintBtn(elBtn)
 
     gGame.isHintMode = true
