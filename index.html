@@ -35,7 +35,13 @@
         </nav>
         <br>
         <nav>
-            <button class="size" onclick="toggleSizeModal()">Board Size ▼ </button>
+            <button id="safe-click" class="safe-click" onclick="renderRandomSafeLocation()">Safe Click</button>
+            <br>
+            <label for="safe-click" class="safe-click"> <span></span> Clicks left</label>
+        </nav>
+        <br>
+        <nav>
+            <button class="size" onclick="toggleBoardSizeModal()">Board Size ▼ </button>
             <button class="smiley" onclick="onInit()">😃</button>
             <div class="hint-container">
                 <button class="light" onclick="enableHintMode(this)"></button>

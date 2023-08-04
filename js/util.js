@@ -1,13 +1,23 @@
 'use strict'
 
-function sumRangeRecursive(n, total = 0) {
-    if (n <= 0) return total
+function findRandSafeLocation() {
+    var isFoundSafeLocation = false
 
-    console.log(n - 1, total + n)
-    return sumRangeRecursive(n - 1, total + n)
+    while (!isFoundSafeLocation) {
+        var i = getRandomInt(0, gBoard.length)
+        var j = getRandomInt(0, gBoard[0].length)
+        var currCell = gBoard[i][j]
 
+        if (!currCell.isShown && !currCell.isMine) isFoundSafeLocation = true
+        else if (gGame.shownCount + gLevel.MINES === gLevel.SIZE * gLevel.SIZE) {
+            isFoundSafeLocation = true
+            i = null
+            j = null
+        }
+    }
+
+    return { i, j }
 }
-
 
 function resetTimer() {
     clearInterval(gTimerIntervalId)

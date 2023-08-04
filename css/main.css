@@ -179,11 +179,26 @@ button.selected {
     border: 1px solid var(--orange-bomb);
 }
 
+button.safe-click {
+    background-color: var(--indigo-blue);
+    border: 1px solid var(--powder-blue);
+}
+
+label.safe-click {
+    font-size: 12px;
+    font-weight: 600;
+}
+
 table {
     margin: auto;
     background-color: var(--powder-blue);
     border-radius: var(--border-radius);
     padding: 7px;
+}
+
+td.safe-location {
+    background-color: rgb(255, 255, 155);
+    border: 2px solid var(--light-cyan);
 }
 
 td {

@@ -5,8 +5,10 @@ var FLAG = '📍'
 
 var gBoard
 var gHintCount
+var gSafeClicksCount
 var gTimerIntervalId
 var gScoreboardTimeOutID
+
 
 var gGame = {
     isOn: false,
@@ -35,6 +37,7 @@ function onInit() {
     gGame.isFirstClick = true
     gGame.lives = 3
     gHintCount = 3
+    gSafeClicksCount = 3
     gBoard = buildBoard()
     renderBoard()
     resetTimer()
@@ -42,6 +45,7 @@ function onInit() {
     renderSmileyBtn()
     resetHintBtns()
     renderFlagsLeft()
+    renderSafeClicksCount()
     // hideGameOverModal()
 }
 
@@ -101,6 +105,23 @@ function onCellMarked(ellCell, i, j) {
 
     renderFlagsLeft()
     checkVictory()
+}
+
+function renderRandomSafeLocation() {
+    if (gSafeClicksCount <= 0) return
+
+    const safeLocation = findRandSafeLocation()
+    const elCell = document.querySelector(`[data-i="${safeLocation.i}"][data-j="${safeLocation.j}"]`)
+
+    elCell.classList.add('safe-location')
+    setTimeout(() => elCell.classList.remove('safe-location'), 3500)
+    gSafeClicksCount--
+    renderSafeClicksCount()
+}
+
+function renderSafeClicksCount() {
+    const elSpan = document.querySelector('label.safe-click span')
+    elSpan.innerText = gSafeClicksCount
 }
 
 function renderScoreboardModal() {
@@ -297,7 +318,7 @@ function renderAllMines() {
 }
 
 function expandShown(i, j) {
-    const mineCount = countMines(gBoard, i, j)
+    const mineCount = gBoard[i][j].minesAroundCount
     if (mineCount > 0) return
 
     const negLocations = findNegsLocations(gBoard, { i, j })
@@ -413,10 +434,10 @@ function selectBoardSize(size, mines, difficulty) {
     gLevel.MINES = mines
     gLevel.DIFFICULTY = difficulty
     onInit()
-    toggleSizeModal()
+    toggleBoardSizeModal()
 }
 
-function toggleSizeModal() {
+function toggleBoardSizeModal() {
     const elModal = document.querySelector('.modal.size-selection')
     elModal.classList.toggle('hidden')
 }
