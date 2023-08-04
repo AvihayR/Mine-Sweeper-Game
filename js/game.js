@@ -72,9 +72,9 @@ function onCellClicked(elCell, i, j) {
         mineClicked()
     }
 
-    expandShown({ i, j })
+    expandShown(i, j)
     renderBoard()
-    checkGameOver()
+    checkVictory()
 }
 
 function onCellMarked(ellCell, i, j) {
@@ -100,7 +100,7 @@ function onCellMarked(ellCell, i, j) {
     }
 
     renderFlagsLeft()
-    checkGameOver()
+    checkVictory()
 }
 
 function renderScoreboardModal() {
@@ -211,15 +211,13 @@ function flashHintCells(elCell, i, j) {
 }
 
 function mineClicked() {
-    //Model:
     gGame.lives--
     if (gGame.lives === 0) gameOver()
 
-    //DOM:
     renderLives()
 }
 
-function renderGameOverModal() {
+function renderGameEndModal() {
     const elModal = document.querySelector('.modal.game-over')
     const elPVictory = document.querySelector('p.victory-state')
     var strHTML = ''
@@ -232,7 +230,7 @@ function renderGameOverModal() {
     elPVictory.innerText = strHTML
 
     elModal.classList.remove('hidden')
-    setTimeout(hideGameOverModal, 3500)
+    setTimeout(hideGameOverModal, 2000)
 }
 
 function hideGameOverModal() {
@@ -261,27 +259,31 @@ function renderLives() {
     elLiveContainer.innerText = strInnerText
 }
 
-function checkGameOver() {
+function checkVictory() {
     if (gGame.shownCount + gGame.markedCount === gLevel.SIZE * gLevel.SIZE) {
-        gGame.isWinner = true
-        gameOver()
+        win()
     }
+}
+
+function win() {
+    gGame.isWinner = true
+    updateBestScores()
+    endGame()
 }
 
 function gameOver(elCell) {
+    renderAllMines()
+    renderGameEndModal()
+    endGame()
+}
+
+function endGame() {
     gGame.isOn = false
     resetTimer()
     renderSmileyBtn()
-
-    if (gGame.isWinner) updateBestScores()
-    else {
-        renderAllMines()
-        console.log('Game over, you lose :(')
-    }
-
-    renderGameOverModal()
-
+    renderGameEndModal()
 }
+
 
 function storeBestTime() {
 
@@ -294,18 +296,24 @@ function renderAllMines() {
     renderBoard()
 }
 
-function expandShown(location) {
-    const mineCount = countMines(gBoard, location.i, location.j)
+function expandShown(i, j) {
+    const mineCount = countMines(gBoard, i, j)
     if (mineCount > 0) return
-    const negLocations = findNegsLocations(gBoard, location)
 
-    for (var i = 0; i < negLocations.length; i++) {
-        const currLocation = negLocations[i]
+    const negLocations = findNegsLocations(gBoard, { i, j })
 
-        if (!gBoard[currLocation.i][currLocation.j].isShown
-            && !gBoard[currLocation.i][currLocation.j].isMarked) {
-            gBoard[currLocation.i][currLocation.j].isShown = true
+    for (var n = 0; n < negLocations.length; n++) {
+        const currLocation = negLocations[n]
+        const currI = currLocation.i
+        const currJ = currLocation.j
+        const currCell = gBoard[currI][currJ]
+
+        if (!currCell.isShown && !currCell.isMarked) {
+            currCell.isShown = true
             gGame.shownCount++
+            if (currCell.minesAroundCount === 0) {
+                expandShown(currI, currJ)
+            }
         }
     }
 }
@@ -335,7 +343,7 @@ function renderBoard() {
             else if (currCell.isFlashed && currCell.isMine) strHTML += MINE
             else if (currCell.isFlashed) strHTML += currCell.minesAroundCount
             else if (currCell.isShown && currCell.isMine) strHTML += MINE
-            else if (currCell.isShown) strHTML += currCell.minesAroundCount
+            else if (currCell.isShown) strHTML += currCell.minesAroundCount || ""
 
             strHTML += '</td>'
         }
