@@ -38,7 +38,6 @@ function onInit() {
     gGame.isHintMode = false
     gGame.shownCount = 0
     gGame.markedCount = 0
-    // gGame.secsPassed = 0
     gSecsPassed = 0
     gGame.isFirstClick = true
     gGame.lives = 3
@@ -56,7 +55,10 @@ function onInit() {
 }
 
 function onCellClicked(elCell, i, j) {
-
+    const currCell = gBoard[i][j]
+    if (!gGame.isOn) return
+    if (currCell.isMarked) return
+    if (currCell.isShown) return
     if (gGame.isFirstClick) {
         randomizeMines(gBoard, { i, j })
         setMinesNegsCount(gBoard)
@@ -64,11 +66,6 @@ function onCellClicked(elCell, i, j) {
         startTimer()
         gGame.isFirstClick = false
     }
-    const currCell = gBoard[i][j]
-    if (!gGame.isOn) return
-    if (currCell.isMarked) return
-    if (currCell.isShown) return
-
 
     if (gGame.isHintMode) {
         flashHintCells(elCell, i, j)
@@ -79,7 +76,8 @@ function onCellClicked(elCell, i, j) {
 
     if (!currCell.isShown) {
         currCell.isShown = true
-        gGame.shownCount++
+
+        if (!currCell.isMine) gGame.shownCount++
     }
 
 
@@ -322,7 +320,7 @@ function renderLives() {
 }
 
 function checkVictory() {
-    if (gGame.shownCount + gGame.markedCount === gLevel.SIZE * gLevel.SIZE) {
+    if (gGame.shownCount + gLevel.MINES >= gLevel.SIZE ** 2) {
         win()
     }
 }
