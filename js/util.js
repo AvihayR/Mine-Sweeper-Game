@@ -1,6 +1,6 @@
 'use strict'
 
-function findRandSafeLocation() {
+function findRandomSafeLocation() {
     var isFoundSafeLocation = false
 
     while (!isFoundSafeLocation) {
@@ -9,10 +9,10 @@ function findRandSafeLocation() {
         var currCell = gBoard[i][j]
 
         if (!currCell.isShown && !currCell.isMine) isFoundSafeLocation = true
+
         else if (gGame.shownCount + gLevel.MINES === gLevel.SIZE * gLevel.SIZE) {
             isFoundSafeLocation = true
-            i = null
-            j = null
+            return null
         }
     }
 
@@ -67,7 +67,6 @@ function findNegsLocations(board, location) {
     return negLocations
 }
 
-
 function countMines(board, rowIdx, colIdx) {
     var count = 0
 
@@ -84,9 +83,6 @@ function countMines(board, rowIdx, colIdx) {
 
     return count
 }
-
-// --------------------------------------------------------------
-
 
 function getRandomIntInclusive(min, max) {
     min = Math.ceil(min);

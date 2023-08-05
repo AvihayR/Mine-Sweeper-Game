@@ -43,6 +43,8 @@ function onInit() {
     gGame.lives = 3
     gGame.hintCount = 3
     gGame.safeClicksCount = 3
+    gSnapshotVault.boards = []
+    gSnapshotVault.games = []
     gBoard = buildBoard()
     renderBoard()
     resetTimer()
@@ -95,9 +97,9 @@ function onCellMarked(ellCell, i, j) {
 
     if (!gGame.isOn) return
     if (currCell.isShown) return
-    if (gGame.markedCount >= gLevel.MINES &&
-        !currCell.isMarked) return
+    if (gGame.markedCount >= gLevel.MINES && !currCell.isMarked) return
 
+    takeSnapshot()
     //Model:
     if (currCell.isMarked) {
         currCell.isMarked = false
@@ -144,7 +146,7 @@ function renderSafeLocation() {
     if (!gGame.isOn) return
     takeSnapshot()
 
-    const safeLocation = findRandSafeLocation()
+    const safeLocation = findRandomSafeLocation()
     const elCell = document.querySelector(`[data-i="${safeLocation.i}"][data-j="${safeLocation.j}"]`)
 
     elCell.classList.add('safe-location')
@@ -186,7 +188,6 @@ function hideScoreboardModal() {
 }
 
 function updateBestScores() {
-    // console.log(gLevel.DIFFICULTY)
     // localStorage.clear();
     var currDifficulty = localStorage.getItem(`${gLevel.DIFFICULTY}`);
 
@@ -306,7 +307,6 @@ function renderSmileyBtn() {
 }
 
 function renderLives() {
-    // console.log(gGame.lives, 'Lives left')
     const elLiveContainer = document.querySelector('.lives-container p')
     var strInnerText = ''
 
